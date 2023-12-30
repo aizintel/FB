@@ -357,6 +357,47 @@ def auto_comment_on_facebook_post():
 
                     print("\n\x1b[1;97m[•] Finished! Commented on all available pages.\x1b[0m")
 
+def auto_follow_facebook_user():
+  token = input('\n\x1b[1;97mEnter the access token: \x1b[0m')
+  user_url = input('\x1b[1;97mEnter the profile URL of the user you want to follow: \x1b[0m')
+
+  user_id = is_post_id(user_url)
+  if not user_id:
+      print("\x1b[1;91mInvalid user URL.\x1b[0m")
+      return
+
+  delay_seconds = float(input('\x1b[1;97mEnter the delay between requests (in seconds): \x1b[0m'))
+
+  pages_data = get_facebook_pages(token)
+
+  if pages_data:
+      print("\x1b[1;97mAvailable Pages:\x1b[0m")
+      for i, page in enumerate(pages_data):
+          print(f"\x1b[1;92m[{i + 1}]. \x1b[1;97m{page['name']}\x1b[0m")
+
+      continue_follow = input("\x1b[1;97mDo you want to continue follow? (yes/no): \x1b[0m")
+
+      if continue_follow.lower() == 'yes':
+          limit = int(input('[•] Enter the limit for follows: '))
+          i = 0
+          while i < limit:
+              page = pages_data[i % len(pages_data)]
+
+              try:
+                  url = f'https://graph.facebook.com/v18.0/{user_id}/subscribers'
+                  headers = {'Authorization': f'Bearer {page["accessToken"]}'}
+
+                  response = requests.post(url, headers=headers, json={})
+                  response.raise_for_status()
+                  print(f"\x1b[1;92mSUCCESS: Followed user {user_id} on behalf of {page['name']}\x1b[0m")
+
+              except requests.RequestException as e:
+                  print(f"\x1b[1;91mError making request: {e}\x1b[0m")
+                  print(f"\x1b[1;91mERROR: Failed to follow user {user_id} on behalf of {page['name']}\x1b[0m")
+
+              i += 1
+              time.sleep(delay_seconds)
+
 
 if __name__ == "__main__":
       try:
@@ -377,7 +418,8 @@ if __name__ == "__main__":
                 print('\n\x1b[1;92m[01]\x1b[0m \x1b[1;97mAuto React on Facebook Post (page)\x1b[0m')
                 print('\x1b[1;92m[02]\x1b[0m \x1b[1;97mAuto Comment on Facebook Post (page)\x1b[0m')
                 print('\x1b[1;92m[03]\x1b[0m \x1b[1;97mAuto Share on Facebook Post (user)\x1b[0m')
-                print('\x1b[1;92m[04]\x1b[0m \x1b[1;97mExit\x1b[0m')
+                print('\x1b[1;92m[04]\x1b[0m \x1b[1;97mAuto Follow Facebook Account (page)\x1b[0m')
+                print('\x1b[1;92m[05]\x1b[0m \x1b[1;97mExit\x1b[0m')
 
                 operation_choice = input("\n\x1b[1mEnter your operation choice: \x1b[0m")
 
@@ -388,6 +430,8 @@ if __name__ == "__main__":
                 elif operation_choice == '3':
                       auto_share_on_facebook_post()
                 elif operation_choice == '4':
+                     auto_follow_facebook_user()
+                elif operation_choice == '5':
                       sys.exit()
                 else:
                       print("\x1b[1;97mInvalid choice. Please choose again.\x1b[0m")
