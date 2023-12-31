@@ -399,6 +399,31 @@ def auto_follow_facebook_user():
               time.sleep(delay_seconds)
 
 
+def get_token_fb():
+    user = input('\n\x1b[1;97mEnter username/email: \x1b[0m')
+    password = input('\x1b[1;97mEnter the password: \x1b[0m')
+    token = '237759909591655%25257C0f140aabedfb65ac27a739ed1a2263b1'
+
+    url = requests.get(f'https://b-api.facebook.com/method/auth.login?access_token={token}&format=json&sdk_version=2&email={user}&locale=en_US&password={password}&sdk=ios&generate_session_cookies=1&sig=3f555f99fb61fcd7aa0c44f58f522ef6')
+
+    try:
+        response = requests.get(url)
+        data = response.json()
+
+        if "session_key" in data:
+            print("\x1b[1;92m\n--- Facebook Token Generated Successfully ---\x1b[0m")
+            print('\x1b[1;97mUsername: ' + data['identifier'] + '\x1b[0m')
+            print('\x1b[1;97mToken: ' + data["access_token"] + '\x1b[0m')
+        else:
+            print("\x1b[1;91m\n--- Facebook Token Generation Failed ---\x1b[0m")
+            print('\x1b[1;97mError Message: ' + data.get('error_msg', 'Unknown error') + '\x1b[0m')
+
+    except requests.exceptions.RequestException as e:
+        print("\x1b[1;91m\n--- Request Failed ---\x1b[0m")
+        print(f'\x1b[1;97mError: {e}\x1b[0m')
+        print("\x1b[1;91m\nPlease check your internet connection and try again.\x1b[0m")
+
+    
 if __name__ == "__main__":
       try:
        
@@ -419,7 +444,8 @@ if __name__ == "__main__":
                 print('\x1b[1;92m[02]\x1b[0m \x1b[1;97mAuto Comment on Facebook Post (page)\x1b[0m')
                 print('\x1b[1;92m[03]\x1b[0m \x1b[1;97mAuto Share on Facebook Post (user)\x1b[0m')
                 print('\x1b[1;92m[04]\x1b[0m \x1b[1;97mAuto Follow Facebook Account (page)\x1b[0m')
-                print('\x1b[1;92m[05]\x1b[0m \x1b[1;97mExit\x1b[0m')
+                print('\x1b[1;92m[05]\x1b[0m \x1b[1;97mGet Facebook Access Toke\x1b[0m')
+                print('\x1b[1;92m[06]\x1b[0m \x1b[1;97mExit\x1b[0m')
 
                 operation_choice = input("\n\x1b[1mEnter your operation choice: \x1b[0m")
 
@@ -432,6 +458,8 @@ if __name__ == "__main__":
                 elif operation_choice == '4':
                      auto_follow_facebook_user()
                 elif operation_choice == '5':
+                     get_token_fb()
+                elif operation_choice == '6':
                       sys.exit()
                 else:
                       print("\x1b[1;97mInvalid choice. Please choose again.\x1b[0m")
