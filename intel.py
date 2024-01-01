@@ -91,7 +91,7 @@ def get_user_cookie(user_email, user_password):
           return (cookie) 
       else:
           return None
-        
+
 def get_facebook_token(cookie):
   headers = {
       'authority': 'business.facebook.com',
@@ -217,11 +217,11 @@ def auto_share_on_facebook_post():
             time.sleep(share_delay)
 
     print(f'\n\x1b[1;92mSUCCESS: Shares Completed ({success_counter[0]}) | Press [Enter] to run again\x1b[0m')
-        
- 
 
 
-          
+
+
+
 def get_facebook_pages(user_access_token):
     url = 'https://graph.facebook.com/v18.0/me/accounts'
     headers = {
@@ -246,7 +246,7 @@ def extract_user_url(post_url):
       return match.group(1)
   else:
       return None
-    
+
 
 def auto_react_to_facebook_post():
     try:
@@ -432,31 +432,25 @@ def auto_follow_facebook_user():
 def auto_create_page():
   print('\n\x1b[1;92m[01]\x1b[0m \x1b[1;97mLogin with email and password\x1b[0m')
   print('\x1b[1;92m[02]\x1b[0m \x1b[1;97mLogin with cookies\x1b[0m')
+
   choice = input("\n\x1b[1;97mChoose login method (1 or 2): \x1b[0m")
+
   if choice == '1':
-    user_email = input("\n\x1b[1;97mEnter your Facebook Email: \x1b[0m")
-    user_password = input("\x1b[1;97mEnter your Facebook Password: \x1b[0m")
-    cookie = get_user_cookie(user_email, user_password)
-    if not cookie:
-        print("\x1b[1;91mInvalid email or password.\x1b[0m")
-        input()
-        return
+      user_email = input("\n\x1b[1;97mEnter your Facebook Email: \x1b[0m")
+      user_password = input("\x1b[1;97mEnter your Facebook Password: \x1b[0m")
+      cookie = get_user_cookie(user_email, user_password)
+
+      if not cookie:
+          print("\x1b[1;91mInvalid email or password.\x1b[0m")
+          input()
+          return
+
   elif choice == '2':
-    cookie = input("\n\x1b[1;97mEnter your cookie: \x1b[0m")
-    if not is_cookie_alive(cookie):
-        print("\x1b[1;91mError: Provided cookie is not valid or expired. Please check your cookie and try again.\x1b[0m")
-        return
+      cookie = input("\n\x1b[1;97mEnter your cookie: \x1b[0m")
   else:
-    print("\x1b[1;91mInvalid choice. Please choose 1 or 2.\x1b[0m")
-    return
-    
-  user_email = input("\n\x1b[1;97mEnter your Facebook Email: \x1b[0m")
-  user_password = input("\x1b[1;97mEnter your Facebook Password: \x1b[0m")
-  cookie = get_user_cookie(user_email, user_password)
-  if not cookie:
-      print("\x1b[1;91mInvalid email or password.\x1b[0m")
-      input()
+      print("\x1b[1;91mInvalid choice. Please choose 1 or 2.\x1b[0m")
       return
+
   try:
       quantity = int(input('\x1b[1;97mEnter how many pages you want to create: \x1b[0m'))
       delay = int(input('\x1b[1;97mEnter the delay in seconds for requests: \x1b[0m'))
@@ -465,59 +459,66 @@ def auto_create_page():
       input()
       return
 
-  user_id = token.split('c_user=')[1].split(';')[0]
-  user_data = requests.get(f'https://mbasic.facebook.com/profile.php?id={user_id}', headers={'cookie': token}).text
-  fb_dtsg = user_data.split('<input type="hidden" name="fb_dtsg" value="')[1].split('"')[0]
-  jazoest = user_data.split('<input type="hidden" name="jazoest" value="')[1].split('"')[0]
+  try:
+      user_id = cookie.split('c_user=')[1].split(';')[0]
+      user_data = requests.get(f'https://mbasic.facebook.com/profile.php?id={user_id}', headers={'cookie': cookie}).text
+      fb_dtsg = user_data.split('<input type="hidden" name="fb_dtsg" value="')[1].split('"')[0]
+      jazoest = user_data.split('<input type="hidden" name="jazoest" value="')[1].split('"')[0]
 
-  i = 1
-  while i <= quantity:
-      page_name = requests.get('https://name.altthenaiz.repl.co/').json()['name']
-      headers = {
-          'cookie': token,
-          'referer': 'https://www.facebook.com/pages/creation/?ref_type=launch_point',
-          'sec-ch-prefers-color-scheme': 'light',
-          'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
-          'sec-ch-ua-full-version-list': '"Not_A Brand";v="99.0.0.0", "Google Chrome";v="109.0.5414.120", "Chromium";v="109.0.5414.120"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"Windows"',
-          'sec-ch-ua-platform-version': '"0.1.0"',
-          'sec-fetch-dest': 'empty',
-          'sec-fetch-mode': 'cors',
-          'sec-fetch-site': 'same-origin',
-          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-          'x-asbd-id': '198387',
-          'x-fb-friendly-name': 'AdditionalProfilePlusEditMutation',
-          'x-fb-lsd': 'VvOG1zo3ie0zBti8fQ6zUf'
-      }
+      i = 1
+      while i <= quantity:
+          page_name = requests.get('https://name.altthenaiz.repl.co/').json()['name']
 
-      data = {
-          'fb_dtsg': fb_dtsg,
-          'jazoest': jazoest,
-          'fb_api_caller_class': 'RelayModern',
-          'fb_api_req_friendly_name': 'AdditionalProfilePlusCreationMutation',
-          'variables': '{"input":{"bio":"","categories":["1062586164506537"],"creation_source":"comet","name":"%s","page_referrer":"launch_point","actor_id":"100037533160611","client_mutation_id":"2"}}' % (page_name),
-          'server_timestamps': 'true',
-          'doc_id': '5296879960418435'
-      }
-      try:
-          response = requests.post('https://www.facebook.com/api/graphql/', headers=headers, data=data).json()
-          if 'data' in response and 'additional_profile_plus_create' in response['data']:
-              page_id = response['data']['additional_profile_plus_create']['additional_profile']['id']
-              print(f'\x1b[1;92mSuccessfully created page with name: {page_name}\x1b[0m')
-              print(f'\x1b[1;92mID: {page_id}\x1b[0m')
-      except:
-          print('\x1b[1;91mError: Unable to create page. Please check for Facebook limitations or blocking. Retry later\x1b[0m')
+          headers = {
+              'cookie': cookie,
+              'referer': 'https://www.facebook.com/pages/creation/?ref_type=launch_point',
+              'sec-ch-prefers-color-scheme': 'light',
+              'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
+              'sec-ch-ua-full-version-list': '"Not_A Brand";v="99.0.0.0", "Google Chrome";v="109.0.5414.120", "Chromium";v="109.0.5414.120"',
+              'sec-ch-ua-mobile': '?0',
+              'sec-ch-ua-platform': '"Windows"',
+              'sec-ch-ua-platform-version': '"0.1.0"',
+              'sec-fetch-dest': 'empty',
+              'sec-fetch-mode': 'cors',
+              'sec-fetch-site': 'same-origin',
+              'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+              'x-asbd-id': '198387',
+              'x-fb-friendly-name': 'AdditionalProfilePlusEditMutation',
+              'x-fb-lsd': 'VvOG1zo3ie0zBti8fQ6zUf'
+          }
 
-      i += 1
-      time.sleep(delay)
-                
+          data = {
+              'fb_dtsg': fb_dtsg,
+              'jazoest': jazoest,
+              'fb_api_caller_class': 'RelayModern',
+              'fb_api_req_friendly_name': 'AdditionalProfilePlusCreationMutation',
+              'variables': '{"input":{"bio":"","categories":["1062586164506537"],"creation_source":"comet","name":"%s","page_referrer":"launch_point","actor_id":"100037533160611","client_mutation_id":"2"}}' % (page_name),
+              'server_timestamps': 'true',
+              'doc_id': '5296879960418435'
+          }
 
-    
+          try:
+              response = requests.post('https://www.facebook.com/api/graphql/', headers=headers, data=data).json()
+
+              if 'data' in response and 'additional_profile_plus_create' in response['data']:
+                  page_id = response['data']['additional_profile_plus_create']['additional_profile']['id']
+                  print(f'\x1b[1;92mSuccessfully created page with name: {page_name}\x1b[0m')
+                  print(f'\x1b[1;92mID: {page_id}\x1b[0m')
+
+          except:
+              print('\x1b[1;91mError: Unable to create page. Please check for Facebook limitations or blocking. Retry later\x1b[0m')
+
+          i += 1
+          time.sleep(delay)
+
+  except:
+      print('\x1b[1;91mInvalid Cookies later\x1b[0m')
+
+
 
 if __name__ == "__main__":
       try:
-       
+
               while True:
                 print('\n\x1b[1;92m                █████╗ ██╗███████╗           \x1b[0m')
                 print('\x1b[1;92m               ██╔══██╗██║╚══███╔╝          \x1b[0m')
