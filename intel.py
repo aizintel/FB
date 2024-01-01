@@ -7,7 +7,7 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def install_dependencies():
-    dependencies = ['requests', 'beautifulsoup4']
+    dependencies = ['requests', 'bs4', 'webbrowser']
     installed_count = 0
 
     for dep in dependencies:
