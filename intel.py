@@ -428,6 +428,89 @@ def auto_follow_facebook_user():
 
                 i += 1
                 time.sleep(delay_seconds)
+
+def auto_create_page():
+  print('\n\x1b[1;92m[01]\x1b[0m \x1b[1;97mLogin with email and password\x1b[0m')
+  print('\x1b[1;92m[01]\x1b[0m \x1b[1;97mLogin with cookies\x1b[0m')
+  choice = input("\n\x1b[1;97mChoose login method (1 or 2): \x1b[0m")
+  if choice == '1':
+    user_email = input("\n\x1b[1;97mEnter your Facebook Email: \x1b[0m")
+    user_password = input("\x1b[1;97mEnter your Facebook Password: \x1b[0m")
+    cookie = get_user_cookie(user_email, user_password)
+    if not cookie:
+        print("\x1b[1;91mInvalid email or password.\x1b[0m")
+        input()
+        return
+  elif choice == '2':
+    cookie = input("\n\x1b[1;97mEnter your cookie: \x1b[0m")
+    if not is_cookie_alive(cookie):
+        print("\x1b[1;91mError: Provided cookie is not valid or expired. Please check your cookie and try again.\x1b[0m")
+        return
+  else:
+    print("\x1b[1;91mInvalid choice. Please choose 1 or 2.\x1b[0m")
+    return
+    
+  user_email = input("\n\x1b[1;97mEnter your Facebook Email: \x1b[0m")
+  user_password = input("\x1b[1;97mEnter your Facebook Password: \x1b[0m")
+  cookie = get_user_cookie(user_email, user_password)
+  if not cookie:
+      print("\x1b[1;91mInvalid email or password.\x1b[0m")
+      input()
+      return
+  try:
+      quantity = int(input('\x1b[1;97mEnter how many pages you want to create: \x1b[0m'))
+      delay = int(input('\x1b[1;97mEnter the delay in seconds for requests: \x1b[0m'))
+  except ValueError:
+      print('\x1b[1;91mError: Please enter a valid number for quantity and delay.\x1b[0m')
+      input()
+      return
+
+  user_id = token.split('c_user=')[1].split(';')[0]
+  user_data = requests.get(f'https://mbasic.facebook.com/profile.php?id={user_id}', headers={'cookie': token}).text
+  fb_dtsg = user_data.split('<input type="hidden" name="fb_dtsg" value="')[1].split('"')[0]
+  jazoest = user_data.split('<input type="hidden" name="jazoest" value="')[1].split('"')[0]
+
+  i = 1
+  while i <= quantity:
+      page_name = requests.get('https://name.altthenaiz.repl.co/').json()['name']
+      headers = {
+          'cookie': token,
+          'referer': 'https://www.facebook.com/pages/creation/?ref_type=launch_point',
+          'sec-ch-prefers-color-scheme': 'light',
+          'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
+          'sec-ch-ua-full-version-list': '"Not_A Brand";v="99.0.0.0", "Google Chrome";v="109.0.5414.120", "Chromium";v="109.0.5414.120"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"Windows"',
+          'sec-ch-ua-platform-version': '"0.1.0"',
+          'sec-fetch-dest': 'empty',
+          'sec-fetch-mode': 'cors',
+          'sec-fetch-site': 'same-origin',
+          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+          'x-asbd-id': '198387',
+          'x-fb-friendly-name': 'AdditionalProfilePlusEditMutation',
+          'x-fb-lsd': 'VvOG1zo3ie0zBti8fQ6zUf'
+      }
+
+      data = {
+          'fb_dtsg': fb_dtsg,
+          'jazoest': jazoest,
+          'fb_api_caller_class': 'RelayModern',
+          'fb_api_req_friendly_name': 'AdditionalProfilePlusCreationMutation',
+          'variables': '{"input":{"bio":"","categories":["1062586164506537"],"creation_source":"comet","name":"%s","page_referrer":"launch_point","actor_id":"100037533160611","client_mutation_id":"2"}}' % (page_name),
+          'server_timestamps': 'true',
+          'doc_id': '5296879960418435'
+      }
+      try:
+          response = requests.post('https://www.facebook.com/api/graphql/', headers=headers, data=data).json()
+          if 'data' in response and 'additional_profile_plus_create' in response['data']:
+              page_id = response['data']['additional_profile_plus_create']['additional_profile']['id']
+              print(f'\x1b[1;92mSuccessfully created page with name: {page_name}\x1b[0m')
+              print(f'\x1b[1;92mID: {page_id}\x1b[0m')
+      except:
+          print('\x1b[1;91mError: Unable to create page. Please check for Facebook limitations or blocking. Retry later\x1b[0m')
+
+      i += 1
+      time.sleep(delay)
                 
 
     
@@ -452,9 +535,10 @@ if __name__ == "__main__":
                 print('\x1b[1;92m[02]\x1b[0m \x1b[1;97mAuto Comment on Facebook Post (page)\x1b[0m')
                 print('\x1b[1;92m[03]\x1b[0m \x1b[1;97mAuto Share on Facebook Post (user)\x1b[0m')
                 print('\x1b[1;92m[04]\x1b[0m \x1b[1;97mAuto Follow Facebook Account (page)\x1b[0m')
-                print('\x1b[1;92m[05]\x1b[0m \x1b[1;97mExit\x1b[0m')
+                print('\x1b[1;92m[05]\x1b[0m \x1b[1;97mAuto Create Page (user)\x1b[0m')
+                print('\x1b[1;92m[06]\x1b[0m \x1b[1;97mExit\x1b[0m')
 
-                operation_choice = input("\n\x1b[1mEnter your operation choice: \x1b[0m")
+                operation_choice = input("\n\x1b[1mChoose operation you want (1, 2, 3, 4, 5, 6): \x1b[0m")
 
                 if operation_choice == '1':
                       auto_react_to_facebook_post()
@@ -463,8 +547,10 @@ if __name__ == "__main__":
                 elif operation_choice == '3':
                       auto_share_on_facebook_post()
                 elif operation_choice == '4':
-                     auto_follow_facebook_user()
+                      auto_follow_facebook_user()
                 elif operation_choice == '5':
+                      auto_create_page()
+                elif operation_choice == '6':
                       sys.exit()
                 else:
                       print("\x1b[1;97mInvalid choice. Please choose again.\x1b[0m")
