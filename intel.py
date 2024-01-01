@@ -430,23 +430,25 @@ def auto_follow_facebook_user():
                 time.sleep(delay_seconds)
 
 def auto_create_page():
-  print('\n\x1b[1;92m[01]\x1b[0m \x1b[1;97mLogin with email and password\x1b[0m')
-  print('\x1b[1;92m[02]\x1b[0m \x1b[1;97mLogin with cookies\x1b[0m')
+ # print('\n\x1b[1;92m[01]\x1b[0m \x1b[1;97mLogin with email and password\x1b[0m')
+  print('\x1b[1;92m[01]\x1b[0m \x1b[1;97mLogin with cookies\x1b[0m')
 
-  choice = input("\n\x1b[1;97mChoose login method (1 or 2): \x1b[0m")
+  choice = input("\n\x1b[1;97mChoose login method (1): \x1b[0m")
+
+  #if choice == '1':
+   #   user_email = input("\n\x1b[1;97mEnter your Facebook Email: \x1b[0m")
+    #  user_password = input("\x1b[1;97mEnter your Facebook Password: \x1b[0m")
+     # cookie = get_user_cookie(user_email, user_password) 
+
+    #  if not cookie:
+   #       print("\x1b[1;91mInvalid email or password.\x1b[0m")
+    #      input()
+    #      return
 
   if choice == '1':
-      user_email = input("\n\x1b[1;97mEnter your Facebook Email: \x1b[0m")
-      user_password = input("\x1b[1;97mEnter your Facebook Password: \x1b[0m")
-      cookie = get_user_cookie(user_email, user_password)
-
-      if not cookie:
-          print("\x1b[1;91mInvalid email or password.\x1b[0m")
-          input()
-          return
-
-  elif choice == '2':
+      print('\n\x1b[1;92m[ Example ]:\x1b[0m \x1b[1;97msb=vZK3ZAkr0Kot9RZYsdOinHjU; datr=vZK3ZJdCak5gObgvXuIv6448; m_ls=%7B%22c%22%3A%7B%221%22%3A%22HCwAABb495wZFtiA0fkIEwUW1OeTx_nBLQA%22%2C%222%22%3A%22GSwVQBxMAAAWBhby0LzLDBYAABV-HEwAABYAFobRvMsMFgAAFigA%22%7D%2C%22d%22%3A%221c7bf43b-22bf-4350-8080-d8409846bfbe%22%2C%22s%22%3A%220%22%2C%22u%22%3A%22nwromx%22%7D; vpd=v1%3B532x503x2; wl_cbv=v2%3Bclient_version%3A2371%3Btimestamp%3A1701584166; locale=en_US; c_user=100079335822323; xs=7%3AZ70UU0CExWpjnQ%3A2%3A1704136661%3A-1%3A7865; fr=1O4M6scyTd8S7r38e.AWVjT7fNVXSzIReLCeqBvtUNTRM.Blkw4Q.ju.AAA.0.0.Blkw_X.AWXDIrTRrOo; presence=C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1704191003022%2C%22v%22%3A1%7D; wd=782x607\x1b[0m')
       cookie = input("\n\x1b[1;97mEnter your cookie: \x1b[0m")
+     
   else:
       print("\x1b[1;91mInvalid choice. Please choose 1 or 2.\x1b[0m")
       return
