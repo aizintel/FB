@@ -1,5 +1,3 @@
-import subprocess
-import sys
 import os
 import time
 import subprocess
@@ -40,6 +38,15 @@ if not check_dependencies():
     time.sleep(2) 
     clear_screen()
     install_dependencies()
+
+import time
+import random
+import requests
+from bs4 import BeautifulSoup as bs
+from datetime import datetime
+import threading
+import re
+
 
 def get_user_cookie(user_email, user_password):
   url = 'https://n.facebook.com'
