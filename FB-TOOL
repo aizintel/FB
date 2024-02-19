@@ -560,4 +560,3 @@ if __name__ == "__main__":
 
       except KeyboardInterrupt:
         print("\x1b[1;91m\n[×] Input canceled. Exiting\x1b[0m")
-
